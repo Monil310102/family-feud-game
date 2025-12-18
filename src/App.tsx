@@ -12,6 +12,7 @@ function App() {
   const [team1Score, setTeam1Score] = useState(0);
   const [team2Score, setTeam2Score] = useState(0);
   const [activeTeam, setActiveTeam] = useState<'team1' | 'team2'>('team1');
+  const [currentBank, setCurrentBank] = useState<number>(0);
 
   const newAnswers = [...answers];
 
@@ -56,12 +57,26 @@ if (!answers[index] || answers[index].isRevealed) {
     const newAnswers = [...answers];
     newAnswers[index].isRevealed = true;
     setAnswers(newAnswers);
+    addToCurrentBank(newAnswers[index].points);
     console.log("Answer revealed:", newAnswers[index]);
     addPointsToActiveTeam(newAnswers[index].points);
     console.log("Updated answers:", newAnswers);
     console.log("Current team scores - Team 1:", team1Score, "Team 2:", team2Score);
     console.log("points added to", activeTeam, ":", newAnswers[index].points);
   }
+
+const revealAllAnswers = () => {
+  const revealedAnswers = answers.map((answer) => {
+    return {
+      ...answer,       
+      isRevealed: true 
+    };
+  });
+
+  setAnswers(revealedAnswers);
+  
+  console.log("All answers revealed for the audience.");
+};
 
   const addStrike = () => {
     setStrikeCount((prev) => prev + 1);
@@ -73,6 +88,11 @@ if (!answers[index] || answers[index].isRevealed) {
   }
 
   const switchActiveTeam = () => {
+  }
+  const addToCurrentBank = (points: number) => {
+    const bank = currentBank + points;
+    setCurrentBank(bank);
+    console.log("Current bank updated to:", bank);
   }
 
   const addPointsToActiveTeam = (points: number) => {
@@ -122,6 +142,23 @@ if (!answers[index] || answers[index].isRevealed) {
         <div className={activeTeam === 2 ? 'active' : ''}>
           Team 2: {team2Score}
         </div>
+        <div>
+          <div className="bank">Bank: {currentBank}</div>
+        </div>
+      </div>
+
+      <div className='Function testing'>
+        <button onClick={resetStrikes}>Reset Strikes</button>
+        <button onClick={switchActiveTeam}>Switch Active Team</button>
+        <button onClick={resetGame}>Reset Game</button>
+        <button onClick={nextRound}>Next Round</button>
+        <button onClick={resetRound}>Reset Round</button>
+        <button onClick={clearBank}>Clear Bank</button>
+        <button onClick={stealBank}>Steal Bank</button>
+        <button onClick={() => revealAllAnswers()}>Reveal All Answers</button>
+
+
+
       </div>
     </div>
   )

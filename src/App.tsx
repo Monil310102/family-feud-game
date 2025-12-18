@@ -88,6 +88,9 @@ const revealAllAnswers = () => {
   }
 
   const switchActiveTeam = () => {
+    const newActiveTeam = activeTeam === 'team1' ? 'team2' : 'team1';
+    setActiveTeam(newActiveTeam);
+    console.log("Active team switched to:", newActiveTeam);
   }
   const addToCurrentBank = (points: number) => {
     const bank = currentBank + points;

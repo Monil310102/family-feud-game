@@ -139,12 +139,16 @@ const revealAllAnswers = () => {
           </div>
         ))}
       </div>
-
+      <div>
+        <br></br>
+      </div>
       {/* Status Area */}
       <div className="status">
         <div className="strikes">STRIKES: {strikeCount}</div>
       </div>
-
+      <div>
+        <br></br>
+      </div>
       {/* Footer: Scores */}
       <div className="scores">
         <div className={activeTeam === 1 ? 'active' : ''}>
@@ -157,7 +161,15 @@ const revealAllAnswers = () => {
           <div className="bank">Bank: {currentBank}</div>
         </div>
       </div>
-
+            <div>
+        <br></br>
+      </div>
+      <div>
+          <div className="CurrentTeam">Current Team: {activeTeam}</div>
+        </div>
+      <div>
+        <br></br>
+      </div>
       <div className='Function testing'>
         <button onClick={resetStrikes}>Reset Strikes</button>
         <button onClick={switchActiveTeam}>Switch Active Team</button>

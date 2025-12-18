@@ -97,6 +97,14 @@ const revealAllAnswers = () => {
 
   const addPointsToActiveTeam = (points: number) => {
     console.log("Adding points:", points, "to", activeTeam);
+    if (activeTeam === 'team1') {
+      setTeam1Score((prev) => prev + points);
+      console.log("Team 1 score updated to:", team1Score + points);
+    }
+    else {
+      setTeam2Score((prev) => prev + points);
+      console.log("Team 2 score updated to:", team2Score + points);
+    }
   }
   const resetGame = () => {
 
@@ -156,9 +164,8 @@ const revealAllAnswers = () => {
         <button onClick={clearBank}>Clear Bank</button>
         <button onClick={stealBank}>Steal Bank</button>
         <button onClick={() => revealAllAnswers()}>Reveal All Answers</button>
-
-
-
+        <button onClick={() => addPointsToActiveTeam(100)}>Add 100 Points to Active Team</button>
+        <button onClick={() => console.log(activeTeam)}>current TEam</button> 
       </div>
     </div>
   )

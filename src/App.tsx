@@ -32,6 +32,7 @@ function App() {
     // Logic 3: Handle "N" for Strike
     if (key.toLowerCase() === "n") {
       addStrike();
+      playSoundEffect("strike.mp3")
     }
   };
 
@@ -54,8 +55,8 @@ useEffect(() => {
 
   const revealAnswer = (index: number) => {
   console.log("Revealing answer at index:", index);
-if (!answers[index] || answers[index].isRevealed) {
-    console.log("Answer already revealed or index out of bounds");
+    if (!answers[index] || answers[index].isRevealed) {
+      console.log("Answer already revealed or index out of bounds");
     return;
   }
 
@@ -68,6 +69,7 @@ if (!answers[index] || answers[index].isRevealed) {
     console.log("Updated answers:", newAnswers);
     console.log("Current team scores - Team 1:", team1Score, "Team 2:", team2Score);
     console.log("points added to", activeTeam, ":", newAnswers[index].points);
+    playSoundEffect("correct.mp3");
   }
 
 const revealAllAnswers = () => {
@@ -128,6 +130,10 @@ const revealAllAnswers = () => {
     addPointsToActiveTeam(currentBank);
     clearBank();
   }
+  const playSoundEffect = (file: string) => {
+    const audio = new Audio(file);
+    audio.play().catch(e => console.error("Audio play failed:", e));
+  };
    
 
   console.log("Rendering App Component");
@@ -189,6 +195,8 @@ const revealAllAnswers = () => {
         <button onClick={() => revealAllAnswers()}>Reveal All Answers</button>
         <button onClick={() => addPointsToActiveTeam(100)}>Add 100 Points to Active Team</button>
         <button onClick={() => console.log(activeTeam)}>current TEam</button> 
+        <button onClick={() => playSoundEffect("correct.mp3")}> correct sfx </button>
+        <button onClick={() => playSoundEffect("strike.mp3")}> incorrect  sfx</button>
       </div>
     </div>
   )

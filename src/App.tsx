@@ -60,6 +60,14 @@ useEffect(() => {
   }
 }, [currentRoundIndex]);
 
+useEffect(() => {
+  const allRevealed = answers.every(a => a.isRevealed);
+  
+  if (allRevealed && currentBank > 0) {
+    alert("Clean Sweep! Awarding bank automatically.");
+    BankPoints();
+  }
+}, [answers]);
 
   const revealAnswer = (index: number) => {
   console.log("Revealing answer at index:", index);

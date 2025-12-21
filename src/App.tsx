@@ -65,7 +65,6 @@ useEffect(() => {
     setAnswers(newAnswers);
     addToCurrentBank(newAnswers[index].points);
     console.log("Answer revealed:", newAnswers[index]);
-    addPointsToActiveTeam(newAnswers[index].points);
     console.log("Updated answers:", newAnswers);
     console.log("Current team scores - Team 1:", team1Score, "Team 2:", team2Score);
     console.log("points added to", activeTeam, ":", newAnswers[index].points);
@@ -120,6 +119,15 @@ const revealAllAnswers = () => {
 
   }
   const nextRound = () => {
+    if (currentRoundIndex < 4) {
+      setCurrentRoundIndex(prev => prev + 1);
+      
+      resetStrikes();
+      (0);
+      console.log("Moving to next round...");
+    } else {
+      alert("Game Over! All 5 rounds complete.");
+    }
   }
   const resetRound = () => {
   }
@@ -134,7 +142,6 @@ const revealAllAnswers = () => {
     const audio = new Audio(file);
     audio.play().catch(e => console.error("Audio play failed:", e));
   };
-   
 
   console.log("Rendering App Component");
   console.log(answers)
@@ -174,6 +181,10 @@ const revealAllAnswers = () => {
         <div>
           <div className="bank">Bank: {currentBank}</div>
         </div>
+        <div>
+          <div className="currentRoundIndex">Round: {currentRoundIndex+1}</div>
+        </div>
+        
       </div>
             <div>
         <br></br>

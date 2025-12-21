@@ -14,8 +14,6 @@ function App() {
   const [activeTeam, setActiveTeam] = useState<'team1' | 'team2'>('team1');
   const [currentBank, setCurrentBank] = useState<number>(0);
 
-  const newAnswers = [...answers];
-
   useEffect(() => {
   const handleKeyDown = (event: KeyboardEvent) => {
     const key = event.key;
@@ -124,8 +122,11 @@ const revealAllAnswers = () => {
   const resetRound = () => {
   }
   const clearBank = () => {
+    setCurrentBank(0);
   }
-  const stealBank = () => {
+  const BankPoints = () => {
+    addPointsToActiveTeam(currentBank);
+    clearBank();
   }
    
 
@@ -184,7 +185,7 @@ const revealAllAnswers = () => {
         <button onClick={nextRound}>Next Round</button>
         <button onClick={resetRound}>Reset Round</button>
         <button onClick={clearBank}>Clear Bank</button>
-        <button onClick={stealBank}>Steal Bank</button>
+        <button onClick={BankPoints}> Bank Points</button>
         <button onClick={() => revealAllAnswers()}>Reveal All Answers</button>
         <button onClick={() => addPointsToActiveTeam(100)}>Add 100 Points to Active Team</button>
         <button onClick={() => console.log(activeTeam)}>current TEam</button> 

@@ -52,6 +52,14 @@ useEffect(() => {
   }
 }, [strikeCount]);
 
+useEffect(() => {
+  const nextRoundData = mockRounds[currentRoundIndex];
+
+  if (nextRoundData) {
+    setAnswers(nextRoundData.answers);
+  }
+}, [currentRoundIndex]);
+
 
   const revealAnswer = (index: number) => {
   console.log("Revealing answer at index:", index);
@@ -143,8 +151,8 @@ const revealAllAnswers = () => {
     audio.play().catch(e => console.error("Audio play failed:", e));
   };
 
-  console.log("Rendering App Component");
-  console.log(answers)
+
+  console.log("Answers:", answers);
   return (
     <div className="game-container">
       {/* Header Area */}

@@ -45,6 +45,13 @@ function App() {
 
 }, [answers, strikeCount, team1Score, team2Score, activeTeam]);
 
+useEffect(() => {
+  if (strikeCount >= 3) {
+    console.log("Three strikes! Switching active team.");
+    switchActiveTeam();
+    resetStrikes();
+  }
+}, [strikeCount]);
 
 
   const revealAnswer = (index: number) => {

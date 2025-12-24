@@ -64,6 +64,9 @@ const alerts = {
       question,
       "info"
     ),
+
+    
+  
 };
 
   useEffect(() => {
@@ -157,6 +160,11 @@ useEffect(() => {
       
       BankPoints(originalTeam); 
       alert(`Steal Failed! Points awarded to ${originalTeam === 'team1' ? 'Team 1' : 'Team 2'}`);
+
+      alerts.roundWin(
+        originalTeam === 'team1' ? 'TEAM 1' : 'TEAM 2',
+        currentBank
+    );
     }, 500);
 
     return () => clearTimeout(timer);
@@ -173,6 +181,11 @@ useEffect(() => {
       BankPoints(); // Awards to activeTeam
       //alert(`Clean Sweep! Points for2 ${activeTeam === 'team1' ? 'Team 1' : 'Team 2'}!`);
       alerts.cleanSweep();
+
+            alerts.roundWin(
+        activeTeam === 'team1' ? 'TEAM 1' : 'TEAM 2',
+        currentBank
+      );
     }, 600);
     return () => clearTimeout(timer);
   }
@@ -217,6 +230,12 @@ const revealAnswer = (index: number) => {
         activeTeam === 'team1' ? 'TEAM 1' : 'TEAM 2',
         newBankTotal
       );
+
+
+      alerts.roundWin(
+      activeTeam === 'team1' ? 'TEAM 1' : 'TEAM 2',
+      currentBank
+    );
     }, 500);
   }
 };
@@ -281,6 +300,11 @@ const revealAllAnswers = () => {
       );
     } else {
       alert("Game Over! All 5 rounds complete.");
+      showAlert(
+  "GAME OVER",
+  `Final Score — Team 1: ${team1Score} | Team 2: ${team2Score}`,
+  "info"
+);
     }
   }
   const clearBank = () => {

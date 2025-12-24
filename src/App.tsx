@@ -101,21 +101,27 @@ function App() {
 useEffect(() => {
   // 1. THE SWITCH: Happens at exactly 3 strikes
   if (strikeCount === 3) {
-    alert("3 Strikes! Switching to stealing team.");
-    switchActiveTeam(); // This changes 'team1' to 'team2' or vice versa
-    playSoundEffect("three-strikes.mp3");
+    // We wait 500ms so the 3rd strike animation/sound can play first
+    const timer = setTimeout(() => {
+      alert("3 Strikes! Switching to the stealing team.");
+      switchActiveTeam(); 
+      // playSoundEffect("steal-opportunity.mp3"); // Optional: unique sound
+    }, 500);
+
+    return () => clearTimeout(timer); // Cleanup if the component re-renders
   }
 
   // 2. THE STEAL FAIL: Happens if the stealing team misses (Strike 4)
   if (strikeCount === 4) {
-    console.log("Steal failed! Awarding bank to original team.");
-    
-    // Calculate the original team (the one NOT currently active)
-    const originalTeam = activeTeam === 'team1' ? 'team2' : 'team1';
-    
-    // Award points specifically to them and reset
-    BankPoints(originalTeam); 
-    alert(`Steal Failed! Points awarded to ${originalTeam === 'team1' ? 'Team 1' : 'Team 2'}`);
+    const timer = setTimeout(() => {
+      alert("Steal failed! Awarding bank to original team.");
+      const originalTeam = activeTeam === 'team1' ? 'team2' : 'team1';
+      
+      BankPoints(originalTeam); 
+      alert(`Steal Failed! Points awarded to ${originalTeam === 'team1' ? 'Team 1' : 'Team 2'}`);
+    }, 500);
+
+    return () => clearTimeout(timer);
   }
 }, [strikeCount]);
 

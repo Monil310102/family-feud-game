@@ -259,7 +259,7 @@ const revealAnswer = (index: number) => {
   playSoundEffect("correct.mp3");
 
   // 4. THE STEAL WIN
-  if (strikeCount === 3) {
+  if (isStealMode) {
     setTimeout(() => {
       // PASS THE MANUAL TOTAL HERE
       BankPoints(activeTeam, newBankTotal); 
@@ -496,7 +496,7 @@ className={`strike ${activeTeam === 'team2' && strikeCount >= num ? "active" : "
     </div>
 
     {/* Controls */}
-    <div className="controls">
+    {/* <div className="controls">
       <button className="control-btn" onClick={revealAllAnswers}>
         Reveal Answers
       </button>
@@ -512,7 +512,7 @@ className={`strike ${activeTeam === 'team2' && strikeCount >= num ? "active" : "
       <button className="control-btn success" onClick={BankPoints}>
         Bank Points
       </button>
-    </div>
+    </div> */}
   </div>
 );
 

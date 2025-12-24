@@ -256,7 +256,7 @@ const revealAllAnswers = () => {
       setCurrentRoundIndex(prev => prev + 1);
       
       resetStrikes();
-      (0);
+      clearBank();
       console.log("Moving to next round...");
     } else {
       alert("Game Over! All 5 rounds complete.");

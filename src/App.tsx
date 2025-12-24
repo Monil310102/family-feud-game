@@ -34,6 +34,17 @@ function App() {
       addStrike();
       playSoundEffect("strike.mp3")
     }
+
+    
+    // Logic 4: Handle "T" for Toggle Team
+    if (key.toLowerCase() === "t") {
+      switchActiveTeam();
+    }
+    
+    // Logic 5: Handle "R" for Reveal All Answers
+    if (key.toLowerCase() === "r") {
+      revealAllAnswers();
+    }
   };
 
   // Attach the listener

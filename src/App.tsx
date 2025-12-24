@@ -124,7 +124,7 @@ useEffect(() => {
 useEffect(() => {
   const nextRoundData = mockRounds[currentRoundIndex];
   if (nextRoundData) {
-    setAnswers(nextRoundData.answers);
+    setAnswers(nextRoundData.answers.slice(0, 8));
   }
 }, [currentRoundIndex]);
 
@@ -367,7 +367,7 @@ return (
 
     {/* Answer Board */}
     <div className="answer-board">
-      {answers.map((item, index) => (
+      {answers.slice(0, 8).map((item, index) => (
         <div
           key={index}
           className={`answer-tile ${
@@ -425,6 +425,7 @@ return (
 
     {/* Info */}
     <div className="round-indicator">Round {currentRoundIndex + 1}</div>
+    <div className="current-team">Current Team: {activeTeam}</div>
 
     {/* Controls */}
     <div className="controls">

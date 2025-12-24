@@ -10,6 +10,9 @@ export const mockRounds: Question[] = [
       { text: "Wine/Drinks", points: 12, isRevealed: false },
       { text: "Frisbee", points: 8, isRevealed: false },
       { text: "Ants", points: 5, isRevealed: false },
+          { text: "Commute", points: 5, isRevealed: false },
+    { text: "Noise", points: 2, isRevealed: false },
+    { text: "Seating", points: 1, isRevealed: false },
     ]
   },
   {
@@ -43,6 +46,7 @@ export const mockRounds: Question[] = [
     { text: "Get a Snack", points: 12, isRevealed: false },
     { text: "Read a Book", points: 10, isRevealed: false },
     { text: "Toss and Turn", points: 6, isRevealed: false },
+    { text: "Fan", points: 3, isRevealed: false },
   ]
 },
 {
@@ -54,6 +58,8 @@ export const mockRounds: Question[] = [
     { text: "Meetings", points: 10, isRevealed: false },
     { text: "Coworkers", points: 7, isRevealed: false },
     { text: "Commute", points: 5, isRevealed: false },
+    { text: "Noise", points: 2, isRevealed: false },
+    { text: "Seating", points: 1, isRevealed: false },
   ]
 }
 ];

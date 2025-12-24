@@ -337,3 +337,74 @@ body {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* =========================
+   Alert Modal
+========================= */
+
+.alert-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.alert-box {
+  background: var(--card-bg);
+  border: 3px solid var(--neon-blue);
+  border-radius: 20px;
+  padding: 40px 50px;
+  text-align: center;
+  box-shadow: var(--glow-blue);
+  animation: popIn 0.4s ease-out;
+  min-width: 420px;
+}
+
+.alert-box h2 {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+  text-shadow: var(--glow-blue);
+}
+
+.alert-box p {
+  font-size: 1.4rem;
+  opacity: 0.9;
+}
+
+.alert-box button {
+  margin-top: 25px;
+  padding: 12px 30px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background: var(--neon-yellow);
+  color: #1a1a3a;
+}
+
+.alert-box.success {
+  border-color: #3eff3e;
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.7);
+}
+
+.alert-box.warning {
+  border-color: #ff3e3e;
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

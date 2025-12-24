@@ -1,6 +1,7 @@
 import { useState , useEffect } from 'react'
 import { mockRounds } from './Mockdata/mockData'
 import type { Answer } from './types/games';
+import type { GameAlert } from './types/games';
 import './App.css'
 
 function App() {
@@ -13,6 +14,57 @@ function App() {
   const [team2Score, setTeam2Score] = useState(0);
   const [activeTeam, setActiveTeam] = useState<'team1' | 'team2'>('team1');
   const [currentBank, setCurrentBank] = useState<number>(0);
+  const [gameAlert, setGameAlert] = useState<GameAlert>(null);
+
+
+    const showAlert = (
+    title: string,
+    subtitle?: string,
+    variant: "info" | "success" | "warning" = "info"
+  ) => {
+    setGameAlert({ title, subtitle, variant });
+
+    // auto-dismiss after 2.5s
+    setTimeout(() => {
+      setGameAlert(null);
+    }, 2500);
+  };
+
+const alerts = {
+  cleanSweep: () =>
+    showAlert("CLEAN SWEEP!", "All answers revealed", "success"),
+
+  stealOpportunity: (team: "TEAM 1" | "TEAM 2") =>
+    showAlert("STEAL!", `${team} can steal`, "warning"),
+
+  stealSuccess: (team: "TEAM 1" | "TEAM 2", points: number) =>
+    showAlert(
+      "SUCCESSFUL STEAL!",
+      `${team} steals ${points} points`,
+      "success"
+    ),
+
+  stealFail: (team: "TEAM 1" | "TEAM 2", points: number) =>
+    showAlert(
+      "STEAL FAILED",
+      `${team} banks ${points} points`,
+      "warning"
+    ),
+
+  roundWin: (team: "TEAM 1" | "TEAM 2", points: number) =>
+    showAlert(
+      `${team} WINS THE ROUND`,
+      `They take ${points} points`,
+      "success"
+    ),
+
+  newRound: (round: number, question: string) =>
+    showAlert(
+      `ROUND ${round} / 5`,
+      question,
+      "info"
+    ),
+};
 
   useEffect(() => {
   const handleKeyDown = (event: KeyboardEvent) => {
@@ -85,6 +137,7 @@ useEffect(() => {
     // We wait 500ms so the 3rd strike animation/sound can play first
     const timer = setTimeout(() => {
       alert("3 Strikes! Switching to the stealing team.");
+      alerts.stealOpportunity(activeTeam === 'team1' ? 'TEAM 2' : 'TEAM 1');
       switchActiveTeam(); 
       // playSoundEffect("steal-opportunity.mp3"); // Optional: unique sound
     }, 500);
@@ -96,6 +149,10 @@ useEffect(() => {
   if (strikeCount === 4) {
     const timer = setTimeout(() => {
       alert("Steal failed! Awarding bank to original team.");
+      alerts.stealFail(
+        activeTeam === 'team1' ? 'TEAM 2' : 'TEAM 1',
+        currentBank
+      );
       const originalTeam = activeTeam === 'team1' ? 'team2' : 'team1';
       
       BankPoints(originalTeam); 
@@ -114,7 +171,8 @@ useEffect(() => {
   if (allRevealed && currentBank > 0 && strikeCount < 3) {
     const timer = setTimeout(() => {
       BankPoints(); // Awards to activeTeam
-      alert(`Clean Sweep! Points for2 ${activeTeam === 'team1' ? 'Team 1' : 'Team 2'}!`);
+      //alert(`Clean Sweep! Points for2 ${activeTeam === 'team1' ? 'Team 1' : 'Team 2'}!`);
+      alerts.cleanSweep();
     }, 600);
     return () => clearTimeout(timer);
   }
@@ -155,6 +213,10 @@ const revealAnswer = (index: number) => {
       BankPoints(activeTeam, newBankTotal); 
       
       alert(`Successful Steal! Team ${activeTeam === 'team1' ? '1' : '2'} takes all ${newBankTotal} points!`);
+      alerts.stealSuccess(
+        activeTeam === 'team1' ? 'TEAM 1' : 'TEAM 2',
+        newBankTotal
+      );
     }, 500);
   }
 };
@@ -213,11 +275,13 @@ const revealAllAnswers = () => {
       resetStrikes();
       clearBank();
       console.log("Moving to next round...");
+      alerts.newRound(
+        currentRoundIndex + 2,
+        mockRounds[currentRoundIndex + 1]?.questionText || ""
+      );
     } else {
       alert("Game Over! All 5 rounds complete.");
     }
-  }
-  const resetRound = () => {
   }
   const clearBank = () => {
     setCurrentBank(0);
@@ -235,6 +299,7 @@ const BankPoints = (targetTeam = activeTeam, points = currentBank) => {
     const audio = new Audio(file);
     audio.play().catch(e => console.error("Audio play failed:", e));
   };
+  
 
 
   console.log("Answers:", answers);
@@ -353,6 +418,20 @@ const BankPoints = (targetTeam = activeTeam, points = currentBank) => {
 
 return (
   <div className="game-container">
+
+    {gameAlert && (
+      <div className="alert-overlay">
+        <div className={`alert-box ${gameAlert.variant || "info"}`}>
+          <h2>{gameAlert.title}</h2>
+          {gameAlert.subtitle && <p>{gameAlert.subtitle}</p>}
+
+          <button onClick={() => setGameAlert(null)}>CONTINUE</button>
+        </div>
+      </div>
+    )}
+
+
+
     {/* Header */}
     <div className="header">
       <h1 className="title">FAMILY FEUD</h1>

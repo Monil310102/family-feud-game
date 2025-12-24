@@ -22,3 +22,11 @@ export interface GameState {
     currentBank : number;
 
 }
+
+export type GameAlert =
+  | null
+  | {
+      title: string;
+      subtitle?: string;
+      variant?: "info" | "success" | "warning";
+    };

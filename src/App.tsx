@@ -44,59 +44,6 @@ function App() {
 
 }, [answers, strikeCount, team1Score, team2Score, activeTeam]);
 
-// useEffect(() => {
-//   // --- STRIKE 3: THE SWITCH ---
-//   if (strikeCount === 3) {
-//     console.log("3 Strikes! Switching to the stealing team.");
-//     // Switch team, but KEEP the strikes at 3 so we know we are in 'Steal Mode'
-//     switchActiveTeam(); 
-//     playSoundEffect("three-strikes.mp3"); // Optional: distinct sound for steal
-//   }
-
-//   // --- STRIKE 4: THE FAILED STEAL ---
-//   if (strikeCount === 4) {
-//     console.log("Steal failed! Awarding bank to original team.");
-    
-//     // The original team is the one NOT currently active
-//     const originalTeam = activeTeam === 'team1' ? 'team2' : 'team1';
-    
-//     // Award the bank to the original team
-//     BankPoints(originalTeam); 
-    
-//     alert(`Steal Failed! Points go to ${originalTeam === 'team1' ? 'Team 1' : 'Team 2'}`);
-    
-//     // resetStrikes() is called inside BankPoints now, but you can call it here too
-//     resetStrikes();
-//   }
-// }, [strikeCount]);
-
-// useEffect(() => {
-//   const nextRoundData = mockRounds[currentRoundIndex];
-
-//   if (nextRoundData) {
-//     setAnswers(nextRoundData.answers);
-//   }
-// }, [currentRoundIndex]);
-
-// useEffect(() => {
-//   // Check if every answer in the current set is revealed
-//   const allRevealed = answers.length > 0 && answers.every(a => a.isRevealed);
-
-//   // ONLY auto-bank if the board is cleared AND it's a normal turn (strikes < 3)
-//   if (allRevealed && currentBank > 0 && strikeCount < 3) {
-//     const timer = setTimeout(() => {
-//       console.log("Clean Sweep! All answers found.");
-      
-//       // Award to the current active team
-//       BankPoints(); 
-      
-//       alert(`Clean Sweep! Points awarded to ${activeTeam === 'team1' ? 'Team 1' : 'Team 2'}!`);
-//     }, 600); // Slight delay so the last answer can be seen first
-
-//     return () => clearTimeout(timer);
-//   }
-// }, [answers, currentBank, activeTeam, strikeCount]);
-
 // EFFECT A: The Strike & Steal Referee
 useEffect(() => {
   // 1. THE SWITCH: Happens at exactly 3 strikes
@@ -147,38 +94,6 @@ useEffect(() => {
   }
 }, [currentRoundIndex]);
 
-
-// const revealAnswer = (index: number) => {
-//   console.log("Revealing answer at index:", index);
-//   if (!answers[index] || answers[index].isRevealed) {
-//     console.log("Answer already revealed or index out of bounds");
-//     return;
-//   }
-
-//   const newAnswers = [...answers];
-//   newAnswers[index].isRevealed = true;
-//   setAnswers(newAnswers);
-//   addToCurrentBank(newAnswers[index].points);
-
-//   console.log("Answer revealed:", newAnswers[index]);
-//   console.log("Updated answers:", newAnswers);
-//   console.log("Current team scores - Team 1:", team1Score, "Team 2:", team2Score);
-//   console.log("points added to", activeTeam, ":", newAnswers[index].points);
-  
-//   playSoundEffect("correct.mp3");
-
-//   // --- NEW STEAL LOGIC ---
-//   if (strikeCount === 3) {
-//     console.log("Successful Steal! Awarding bank to:", activeTeam);
-    
-//     // We use a small timeout so the user sees the answer flip 
-//     // before the points move and the alert pops up
-//     setTimeout(() => {
-//       BankPoints(); // This will award the bank to the activeTeam (the stealing team)
-//       alert(`Successful Steal! Team ${activeTeam === 'team1' ? '1' : '2'} takes the bank!`);
-//     }, 500);
-//   }
-// }
 
 const revealAnswer = (index: number) => {
   console.log("Revealing answer at index:", index);

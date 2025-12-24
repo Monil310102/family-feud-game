@@ -1,0 +1,339 @@
+/* =========================
+   Root Theme Variables
+========================= */
+:root {
+  --neon-blue: #00f0ff;
+  --neon-yellow: #ffde00;
+  --dark-bg: linear-gradient(135deg, #0a0a2a 0%, #1a1a3a 100%);
+  --card-bg: rgba(20, 20, 50, 0.85);
+  --glow-blue: 0 0 12px rgba(0, 240, 255, 0.7);
+  --glow-yellow: 0 0 12px rgba(255, 222, 0, 0.7);
+  --team1-color: #ff3e6d;
+  --team2-color: #3e9bff;
+}
+
+/* =========================
+   Global Reset
+========================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Open Sans", sans-serif;
+  background: var(--dark-bg);
+  color: white;
+  min-height: 100vh;
+}
+
+/* =========================
+   Game Container
+========================= */
+.game-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* =========================
+   Header
+========================= */
+.header {
+  text-align: center;
+}
+
+.title {
+  font-family: "Montserrat", sans-serif;
+  font-size: 4rem;
+  font-weight: 800;
+  color: var(--neon-yellow);
+  text-shadow: 0 0 15px rgba(255, 222, 0, 0.6);
+  letter-spacing: 3px;
+  animation: titlePulse 2s infinite;
+}
+
+@keyframes titlePulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* =========================
+   Question Card
+========================= */
+.question-card {
+  background: var(--card-bg);
+  border: 3px solid var(--neon-blue);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: var(--glow-blue);
+}
+
+.question-text {
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* =========================
+   Answer Board
+========================= */
+/* .answer-board {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  max-width: 900px;
+  margin: 0 auto;
+} */
+.answer-board {
+  display: flex;               /* use flex instead of grid */
+  flex-wrap: wrap;             /* wrap to next row if needed */
+  justify-content: center;     /* center tiles */
+  gap: 16px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Fixed-size tiles, no resize on reveal */
+.answer-tile {
+  background: var(--card-bg);
+  border-radius: 12px;
+  width: 420px;           /* take full column width */
+  height: 80px;         /* fixed height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;      /* keep points inside tile */
+  padding: 0 20px;       /* horizontal padding */
+  box-sizing: border-box;
+}
+
+.answer-tile.unrevealed {
+  border: 4px solid var(--neon-yellow);
+  cursor: pointer;
+}
+
+.answer-tile.unrevealed:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--glow-yellow);
+}
+
+.answer-tile.revealed {
+  border: 4px solid var(--neon-blue);
+  box-shadow: var(--glow-blue);
+  justify-content: space-between;
+}
+
+/* =========================
+   Answer Content
+========================= */
+.answer-number {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: var(--neon-yellow);
+}
+
+.answer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* Ensure points badge doesn't stretch tile */
+.points-badge {
+  width: 50px;
+  height: 50px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background: var(--neon-yellow);
+  color: #1a1a3a;
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+
+/* =========================
+   Bank Area
+========================= */
+.bank-area {
+  margin: 10px auto;
+  background: var(--neon-yellow);
+  color: #1a1a3a;
+  padding: 18px 40px;
+  border-radius: 30px;
+  font-size: 2.3rem;
+  font-weight: 800;
+  box-shadow: var(--glow-yellow);
+}
+
+/* =========================
+   Teams & Footer
+========================= */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  position: relative;
+}
+
+.team-panel {
+  width: 48%;
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 18px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.team-panel.team1 {
+  border: 3px solid var(--team1-color);
+}
+
+.team-panel.team2 {
+  border: 3px solid var(--team2-color);
+}
+
+.team-name {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.team-score {
+  font-size: 2.6rem;
+  font-weight: 900;
+}
+
+/* =========================
+   Active Team Pulse
+========================= */
+.team-panel.active {
+  border: 3px solid var(--neon-blue); /* keep the neon blue border */
+  animation: pulseBorder 1.5s infinite; /* apply the animation */
+}
+
+/* Keyframes for pulsing effect */
+@keyframes pulseBorder {
+  0% {
+    box-shadow: 0 0 5px rgba(0, 240, 255, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(0, 240, 255, 1);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(0, 240, 255, 0.5);
+  }
+}
+
+
+/* =========================
+   Strikes
+========================= */
+.strikes-container {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 10px;
+}
+
+.strike {
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: #ff3e3e;
+  opacity: 0.25;
+}
+
+.strike.active {
+  opacity: 1;
+  text-shadow: 0 0 12px rgba(255, 0, 0, 0.8);
+}
+
+/* =========================
+   Round / Current Team
+========================= */
+.round-indicator,
+.current-team {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+/* =========================
+   Controls
+========================= */
+.controls {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.control-btn {
+  background: var(--card-bg);
+  border: 2px solid var(--neon-blue);
+  border-radius: 12px;
+  padding: 14px;
+  color: white;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.control-btn:hover {
+  background: var(--neon-blue);
+  color: #1a1a3a;
+  box-shadow: var(--glow-blue);
+}
+
+.control-btn.warning {
+  border-color: #ff3e3e;
+}
+
+.control-btn.warning:hover {
+  background: #ff3e3e;
+  box-shadow: 0 0 12px rgba(255, 0, 0, 0.7);
+}
+
+.control-btn.success {
+  border-color: #3eff3e;
+}
+
+.control-btn.success:hover {
+  background: #3eff3e;
+  color: #1a1a3a;
+  box-shadow: 0 0 12px rgba(0, 255, 0, 0.7);
+}
+
+/* =========================
+   Responsive
+========================= */
+@media (max-width: 768px) {
+  .answer-board {
+    grid-template-columns: 1fr;
+  }
+
+  .footer {
+    flex-direction: column;
+  }
+
+  .team-panel {
+    width: 100%;
+  }
+
+  .controls {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

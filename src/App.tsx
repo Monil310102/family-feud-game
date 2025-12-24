@@ -1,7 +1,7 @@
 import { useState , useEffect } from 'react'
 import { mockRounds } from './Mockdata/mockData'
 import type { Answer } from './types/games';
-
+import './App.css'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -238,72 +238,215 @@ const BankPoints = (targetTeam = activeTeam, points = currentBank) => {
 
 
   console.log("Answers:", answers);
-  return (
-    <div className="game-container">
-      {/* Header Area */}
-      <h1>FAMILY FEUD</h1>
-      <h2>{mockRounds[currentRoundIndex].questionText}</h2>
+//   return (
+//     <div className="game-container">
+//       {/* Header Area */}
+//       <h1>FAMILY FEUD</h1>
+//       <h2>{mockRounds[currentRoundIndex].questionText}</h2>
 
-      {/* The Board: You will eventually move this to its own component */}
-      <div className="board">
-        {answers.map((item, index) => (
-          <div key={index} className="answer-slot">
-            {/* Logic: If revealed, show text. If not, show number. */}
-            {item.isRevealed ? `${item.text} - ${item.points}` : index + 1}
-          </div>
-        ))}
-      </div>
-      <div>
-        <br></br>
-      </div>
-      {/* Status Area */}
-      <div className="status">
-        <div className="strikes">STRIKES: {strikeCount}</div>
-      </div>
-      <div>
-        <br></br>
-      </div>
-      {/* Footer: Scores */}
-      <div className="scores">
-        <div className={activeTeam === 1 ? 'active' : ''}>
-          Team 1: {team1Score}
-        </div>
-        <div className={activeTeam === 2 ? 'active' : ''}>
-          Team 2: {team2Score}
-        </div>
-        <div>
-          <div className="bank">Bank: {currentBank}</div>
-        </div>
-        <div>
-          <div className="currentRoundIndex">Round: {currentRoundIndex+1}</div>
-        </div>
+//       {/* The Board: You will eventually move this to its own component */}
+//       <div className="board">
+//         {answers.map((item, index) => (
+//           <div key={index} className="answer-slot">
+//             {/* Logic: If revealed, show text. If not, show number. */}
+//             {item.isRevealed ? `${item.text} - ${item.points}` : index + 1}
+//           </div>
+//         ))}
+//       </div>
+//       <div>
+//         <br></br>
+//       </div>
+//       {/* Status Area */}
+//       <div className="status">
+//         <div className="strikes">STRIKES: {strikeCount}</div>
+//       </div>
+//       <div>
+//         <br></br>
+//       </div>
+//       {/* Footer: Scores */}
+//       <div className="scores">
+//         <div className={activeTeam === 1 ? 'active' : ''}>
+//           Team 1: {team1Score}
+//         </div>
+//         <div className={activeTeam === 2 ? 'active' : ''}>
+//           Team 2: {team2Score}
+//         </div>
+//         <div>
+//           <div className="bank">Bank: {currentBank}</div>
+//         </div>
+//         <div>
+//           <div className="currentRoundIndex">Round: {currentRoundIndex+1}</div>
+//         </div>
         
-      </div>
-            <div>
-        <br></br>
-      </div>
-      <div>
-          <div className="CurrentTeam">Current Team: {activeTeam}</div>
+//       </div>
+//             <div>
+//         <br></br>
+//       </div>
+//       <div>
+//           <div className="CurrentTeam">Current Team: {activeTeam}</div>
+//         </div>
+//       <div>
+//         <br></br>
+//       </div>
+//       <div className='Function testing'>
+//         <button onClick={resetStrikes}>Reset Strikes</button>
+//         <button onClick={switchActiveTeam}>Switch Active Team</button>
+//         <button onClick={resetGame}>Reset Game</button>
+//         <button onClick={nextRound}>Next Round</button>
+//         <button onClick={resetRound}>Reset Round</button>
+//         <button onClick={clearBank}>Clear Bank</button>
+//         <button onClick={BankPoints}> Bank Points</button>
+//         <button onClick={() => revealAllAnswers()}>Reveal All Answers</button>
+//         <button onClick={() => addPointsToActiveTeam(100)}>Add 100 Points to Active Team</button>
+//         <button onClick={() => console.log(activeTeam)}>current TEam</button> 
+//         <button onClick={() => playSoundEffect("correct.mp3")}> correct sfx </button>
+//         <button onClick={() => playSoundEffect("strike.mp3")}> incorrect  sfx</button>
+//       </div>
+//     </div>
+//   )
+// }
+
+// return (
+//     <div className="game-wrapper">
+//   {/* TOP SECTION */}
+//   <div className="header">
+//     <div className="team-score">
+//       <div style={{color: '#60a5fa', fontSize: '14px', fontWeight: 'bold', textTransform: 'uppercase'}}>Team 1</div>
+//       <div style={{fontSize: '3rem', fontWeight: '900'}}>{team1Score}</div>
+//     </div>
+
+//     <div className="bank-box">
+//       {currentBank}
+//     </div>
+
+//     <div className="team-score">
+//       <div style={{color: '#f87171', fontSize: '14px', fontWeight: 'bold', textTransform: 'uppercase'}}>Team 2</div>
+//       <div style={{fontSize: '3rem', fontWeight: '900'}}>{team2Score}</div>
+//     </div>
+//   </div>
+
+//   {/* MIDDLE SECTION */}
+//   <div className="answers-grid">
+//     {answers.map((answer, index) => (
+//       <div 
+//         key={index} 
+//         className={`answer-box ${answer.isRevealed ? 'box-revealed' : 'box-hidden'}`}
+//       >
+//         <div style={{paddingLeft: '30px', fontSize: '1.5rem'}}>
+//            {answer.isRevealed ? answer.text.toUpperCase() : (index + 1)}
+//         </div>
+        
+//         {answer.isRevealed && <div className="points-pill">{answer.points}</div>}
+//       </div>
+//     ))}
+//   </div>
+
+//   {/* BOTTOM SECTION */}
+//   <div className="strike-row">
+//     <span className="x-mark" style={{color: strikeCount >= 1 ? '#ef4444' : '#1e293b'}}>X</span>
+//     <span className="x-mark" style={{color: strikeCount >= 2 ? '#ef4444' : '#1e293b'}}>X</span>
+//     <span className="x-mark" style={{color: strikeCount >= 3 ? '#ef4444' : '#1e293b'}}>X</span>
+//   </div>
+// </div>
+//   );
+// }
+
+return (
+  <div className="game-container">
+    {/* Header */}
+    <div className="header">
+      <h1 className="title">FAMILY FEUD</h1>
+    </div>
+
+    {/* Question */}
+    <div className="question-card">
+      <p className="question-text">
+        {mockRounds[currentRoundIndex].questionText}
+      </p>
+    </div>
+
+    {/* Answer Board */}
+    <div className="answer-board">
+      {answers.map((item, index) => (
+        <div
+          key={index}
+          className={`answer-tile ${
+            item.isRevealed ? "revealed" : "unrevealed"
+          }`}
+        >
+          {item.isRevealed ? (
+            <div className="answer-content">
+              <span className="answer-text">{item.text}</span>
+              <span className="points-badge">{item.points}</span>
+            </div>
+          ) : (
+            <span className="answer-number">{index + 1}</span>
+          )}
         </div>
-      <div>
-        <br></br>
+      ))}
+    </div>
+
+    {/* Bank */}
+    <div className="bank-area">BANK: {currentBank}</div>
+
+    {/* Teams */}
+    <div className="footer">
+      <div className={`team-panel team1 ${activeTeam === 'team1' ? "active" : ""}`}>
+        <div className="team-name">TEAM 1</div>
+        <div className="team-score">{team1Score}</div>
+
+        <div className="strikes-container">
+          {[1, 2, 3].map((num) => (
+            <div
+              key={num}
+              className={`strike ${strikeCount >= num ? "active" : ""}`}
+            >
+              X
+            </div>
+          ))}
+        </div>
       </div>
-      <div className='Function testing'>
-        <button onClick={resetStrikes}>Reset Strikes</button>
-        <button onClick={switchActiveTeam}>Switch Active Team</button>
-        <button onClick={resetGame}>Reset Game</button>
-        <button onClick={nextRound}>Next Round</button>
-        <button onClick={resetRound}>Reset Round</button>
-        <button onClick={clearBank}>Clear Bank</button>
-        <button onClick={BankPoints}> Bank Points</button>
-        <button onClick={() => revealAllAnswers()}>Reveal All Answers</button>
-        <button onClick={() => addPointsToActiveTeam(100)}>Add 100 Points to Active Team</button>
-        <button onClick={() => console.log(activeTeam)}>current TEam</button> 
-        <button onClick={() => playSoundEffect("correct.mp3")}> correct sfx </button>
-        <button onClick={() => playSoundEffect("strike.mp3")}> incorrect  sfx</button>
+
+      <div className={`team-panel team2 ${activeTeam === 'team2' ? "active" : ""}`}>
+        <div className="team-name">TEAM 2</div>
+        <div className="team-score">{team2Score}</div>
+        <div className="strikes-container">
+          {[1, 2, 3].map((num) => (
+            <div
+              key={num}
+              className={`strike ${strikeCount >= num ? "active" : ""}`}
+            >
+              X
+            </div>
+          ))}
+        </div>
       </div>
     </div>
-  )
+
+    {/* Info */}
+    <div className="round-indicator">Round {currentRoundIndex + 1}</div>
+
+    {/* Controls */}
+    <div className="controls">
+      <button className="control-btn" onClick={revealAllAnswers}>
+        Reveal Answers
+      </button>
+      <button className="control-btn" onClick={switchActiveTeam}>
+        Switch Team
+      </button>
+      <button className="control-btn" onClick={nextRound}>
+        Next Round
+      </button>
+      <button className="control-btn warning" onClick={resetGame}>
+        Reset Game
+      </button>
+      <button className="control-btn success" onClick={BankPoints}>
+        Bank Points
+      </button>
+    </div>
+  </div>
+);
+
 }
 
 export default App

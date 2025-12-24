@@ -5,7 +5,6 @@ import type { GameAlert } from './types/games';
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
   const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
   const [answers, setAnswers] = useState<Answer[]>(mockRounds[currentRoundIndex].answers);
 
@@ -213,31 +212,6 @@ useEffect(() => {
   }
 }, [currentRoundIndex]);
 
-useEffect(() => {
-  if (!roundEndReason) return;
-
-  // Wait so reveal animations can finish
-  const timer = setTimeout(() => {
-    const winningTeam =
-      roundEndReason === "stealFail"
-        ? activeTeam === "team1"
-          ? "TEAM 2"
-          : "TEAM 1"
-        : activeTeam === "team1"
-        ? "TEAM 1"
-        : "TEAM 2";
-
-    const pointsWon =
-      roundEndReason === "cleanSweep" ||
-      roundEndReason === "stealSuccess"
-        ? currentBank
-        : currentBank;
-
-  }, 800);
-
-  return () => clearTimeout(timer);
-}, [roundEndReason]);
-
 
 const revealAnswer = (index: number) => {
   console.log("Revealing answer at index:", index);
@@ -323,29 +297,6 @@ const addStrike = () => {
     setCurrentBank(bank);
     console.log("Current bank updated to:", bank);
   }
-
-  const addPointsToActiveTeam = (points: number) => {
-    console.log("Adding points:", points, "to", activeTeam);
-    if (activeTeam === 'team1') {
-      setTeam1Score((prev) => prev + points);
-      console.log("Team 1 score updated to:", team1Score + points);
-    }
-    else {
-      setTeam2Score((prev) => prev + points);
-      console.log("Team 2 score updated to:", team2Score + points);
-    }
-  }
-  const resetGame = () => {
-
-  }
-
-  const shouldShowStrike = (team: 'team1' | 'team2', strikePosition: number) => {
-  // Rule 1: Only show strikes for the team that is currently active
-  if (activeTeam !== team) return false;
-
-  // Rule 2: Only show the strike if the count has reached this position
-  return strikeCount >= strikePosition;
-};
 
   const nextRound = () => {
     if (currentRoundIndex < 4) {

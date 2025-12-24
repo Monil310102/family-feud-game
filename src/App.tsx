@@ -18,33 +18,56 @@ function App() {
   const handleKeyDown = (event: KeyboardEvent) => {
     const key = event.key;
 
-    // Logic 1: Handle Numbers 1-9
-    if (key >= "1" && key <= "9") {
-      const index = parseInt(key) - 1;
-      revealAnswer(index);
-    }
+  // Logic 1: Handle Numbers 1-9
+  if (key >= "1" && key <= "9") {
+    const index = parseInt(key) - 1;
+    revealAnswer(index);
+  }
 
-    // Logic 2: Handle the "0" for the 10th answer
-    if (key === "0") {
-      revealAnswer(9);
-    }
+  // Logic 2: Handle the "0" for the 10th answer
+  if (key === "0") {
+    revealAnswer(9);
+  }
 
-    // Logic 3: Handle "N" for Strike
-    if (key.toLowerCase() === "n") {
-      addStrike();
-      playSoundEffect("strike.mp3")
-    }
+  // Logic 3: Handle "X" for Strike (Incorrect Guess)
+  if (key.toLowerCase() === "x") {
+    addStrike();
+    playSoundEffect("strike.mp3");
+  }
 
-    
-    // Logic 4: Handle "T" for Toggle Team
-    if (key.toLowerCase() === "t") {
-      switchActiveTeam();
-    }
-    
-    // Logic 5: Handle "R" for Reveal All Answers
-    if (key.toLowerCase() === "r") {
-      revealAllAnswers();
-    }
+  // Logic 4: Handle "T" for Toggle Team (Manually swap Team 1/Team 2)
+  if (key.toLowerCase() === "t") {
+    switchActiveTeam();
+  }
+
+  // Logic 5: Handle "R" for Reveal All Answers (End of round reveal)
+  if (key.toLowerCase() === "r") {
+    revealAllAnswers();
+  }
+
+  // Logic 6: Handle "E" for EMERGENCY RESET (Clear Bank & Strikes)
+  // Use this to "undo" a mistake without changing the round or answers
+  if (key.toLowerCase() === "e") {
+    if (strikeCount >= 3) {
+    switchActiveTeam(); 
+    console.log("Steal interrupted: Reverting to original team.");
+  }
+    setCurrentBank(0);
+    resetStrikes(); 
+    console.log("Emergency Reset triggered: Bank and Strikes cleared.");
+  }
+
+  // Logic 7: Handle "H" for Hide All (Cover all answers back up)
+  if (key.toLowerCase() === "h") {
+    setAnswers(prev => prev.map(a => ({ ...a, isRevealed: false })));
+    setCurrentBank(0);
+    console.log("Emergency Hide triggered: All answers covered.");
+  }
+
+  // Logic 8: Handle "N" for Move to Next Round
+  if (key.toLowerCase() === "n") {
+    nextRound();
+  }
   };
 
   // Attach the listener

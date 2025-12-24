@@ -101,7 +101,7 @@ function App() {
 useEffect(() => {
   // 1. THE SWITCH: Happens at exactly 3 strikes
   if (strikeCount === 3) {
-    console.log("3 Strikes! Switching to stealing team.");
+    alert("3 Strikes! Switching to stealing team.");
     switchActiveTeam(); // This changes 'team1' to 'team2' or vice versa
     playSoundEffect("three-strikes.mp3");
   }
@@ -127,7 +127,7 @@ useEffect(() => {
   if (allRevealed && currentBank > 0 && strikeCount < 3) {
     const timer = setTimeout(() => {
       BankPoints(); // Awards to activeTeam
-      alert(`Clean Sweep! Points for ${activeTeam === 'team1' ? 'Team 1' : 'Team 2'}!`);
+      alert(`Clean Sweep! Points for2 ${activeTeam === 'team1' ? 'Team 1' : 'Team 2'}!`);
     }, 600);
     return () => clearTimeout(timer);
   }
@@ -177,29 +177,29 @@ useEffect(() => {
 const revealAnswer = (index: number) => {
   console.log("Revealing answer at index:", index);
   
-  // Prevent double-clicking or out-of-bounds
-  if (!answers[index] || answers[index].isRevealed) {
-    console.log("Answer already revealed or invalid index");
-    return;
-  }
+  if (!answers[index] || answers[index].isRevealed) return;
 
-  // 1. Update the UI
+  // 1. MANUALLY CALCULATE THE NEW TOTAL
+  // This avoids waiting for the slow React state update
+  const pointsToAdd = answers[index].points;
+  const newBankTotal = currentBank + pointsToAdd; 
+
+  // 2. Update the UI
   const newAnswers = [...answers];
   newAnswers[index].isRevealed = true;
   setAnswers(newAnswers);
 
-  // 2. Update the Bank
-  addToCurrentBank(newAnswers[index].points);
+  // 3. Update the Bank state (for the screen display)
+  addToCurrentBank(pointsToAdd);
   playSoundEffect("correct.mp3");
 
-  // 3. LOGS
-  console.log("Current Bank:", currentBank + newAnswers[index].points);
-
-  // 4. THE STEAL WIN: If they get it right during a steal (Strike 3)
+  // 4. THE STEAL WIN
   if (strikeCount === 3) {
     setTimeout(() => {
-      BankPoints(); // Awards bank to active (stealing) team
-      alert(`Successful Steal! Points go to ${activeTeam === 'team1' ? 'Team 1' : 'Team 2'}`);
+      // PASS THE MANUAL TOTAL HERE
+      BankPoints(activeTeam, newBankTotal); 
+      
+      alert(`Successful Steal! Team ${activeTeam === 'team1' ? '1' : '2'} takes all ${newBankTotal} points!`);
     }, 500);
   }
 };
@@ -267,14 +267,14 @@ const revealAllAnswers = () => {
   const clearBank = () => {
     setCurrentBank(0);
   }
-const BankPoints = (targetTeam = activeTeam) => {
+const BankPoints = (targetTeam = activeTeam, points = currentBank) => {
   if (targetTeam === 'team1') {
-    setTeam1Score((prev) => prev + currentBank);
+    setTeam1Score(prev => prev + points);
   } else {
-    setTeam2Score((prev) => prev + currentBank);
+    setTeam2Score(prev => prev + points);
   }
   setCurrentBank(0);
-  resetStrikes(); 
+  resetStrikes(); // Ensure this sets strikeCount to 0
 };
   const playSoundEffect = (file: string) => {
     const audio = new Audio(file);

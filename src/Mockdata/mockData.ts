@@ -10,9 +10,6 @@ export const mockRounds: Question[] = [
       { text: "Wine/Drinks", points: 12, isRevealed: false },
       { text: "Frisbee", points: 8, isRevealed: false },
       { text: "Ants", points: 5, isRevealed: false },
-          { text: "Commute", points: 5, isRevealed: false },
-    { text: "Noise", points: 2, isRevealed: false },
-    { text: "Seating", points: 1, isRevealed: false },
     ]
   },
   {

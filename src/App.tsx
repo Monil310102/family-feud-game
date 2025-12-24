@@ -502,10 +502,6 @@ return (
       </div>
     </div>
 
-    {/* Info */}
-    <div className="round-indicator">Round {currentRoundIndex + 1}</div>
-    <div className="current-team">Current Team: {activeTeam}</div>
-
     {/* Controls */}
     <div className="controls">
       <button className="control-btn" onClick={revealAllAnswers}>

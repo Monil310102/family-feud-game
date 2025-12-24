@@ -20,6 +20,7 @@ function App() {
 
   const [roundEndReason, setRoundEndReason] =useState<RoundEndReason>(null);
   const [roundPoints, setRoundPoints] = useState<number>(0);
+  const [isStealMode, setIsStealMode] = useState(false);
 
 const showAlert = (
   title: string,
@@ -150,12 +151,14 @@ const alerts = {
 // EFFECT A: The Strike & Steal Referee
 useEffect(() => {
   // 1. THE SWITCH: Happens at exactly 3 strikes
-  if (strikeCount === 3) {
+  if (strikeCount === 3 && !isStealMode) {
     // We wait 500ms so the 3rd strike animation/sound can play first
     const timer = setTimeout(() => {
       alert("3 Strikes! Switching to the stealing team.");
       alerts.stealOpportunity(activeTeam === 'team1' ? 'TEAM 2' : 'TEAM 1');
       switchActiveTeam(); 
+      setIsStealMode(true);
+      resetStrikes();
       // playSoundEffect("steal-opportunity.mp3"); // Optional: unique sound
     }, 500);
 
@@ -163,7 +166,7 @@ useEffect(() => {
   }
 
   // 2. THE STEAL FAIL: Happens if the stealing team misses (Strike 4)
-  if (strikeCount === 4) {
+  if (strikeCount === 1 && isStealMode) {
     const timer = setTimeout(() => {
       alert("Steal failed! Awarding bank to original team.");
       setRoundPoints(currentBank);
@@ -175,6 +178,7 @@ useEffect(() => {
       
       BankPoints(originalTeam); 
       setRoundEndReason("stealFail");
+      resetStrikes();
 
       alert(`Steal Failed! Points awarded to ${originalTeam === 'team1' ? 'Team 1' : 'Team 2'}`);
     }, 500);
@@ -267,7 +271,9 @@ const revealAnswer = (index: number) => {
         activeTeam === 'team1' ? 'TEAM 1' : 'TEAM 2',
         newBankTotal
       );
-      setRoundEndReason("stealSuccess");
+      setRoundEndReason("stealSuccess")
+      setIsStealMode(false);
+      resetStrikes();
     }, 500);
   }
 };
@@ -298,7 +304,7 @@ const revealAllAnswers = () => {
   console.log("All answers revealed for the audience.");
 };
 
-  const addStrike = () => {
+const addStrike = () => {
     setStrikeCount((prev) => prev + 1);
     console.log("Strike added. Total strikes now:", strikeCount + 1);
   }
@@ -332,6 +338,15 @@ const revealAllAnswers = () => {
   const resetGame = () => {
 
   }
+
+  const shouldShowStrike = (team: 'team1' | 'team2', strikePosition: number) => {
+  // Rule 1: Only show strikes for the team that is currently active
+  if (activeTeam !== team) return false;
+
+  // Rule 2: Only show the strike if the count has reached this position
+  return strikeCount >= strikePosition;
+};
+
   const nextRound = () => {
     if (currentRoundIndex < 4) {
       setCurrentRoundIndex(prev => prev + 1);
@@ -339,6 +354,8 @@ const revealAllAnswers = () => {
       resetStrikes();
       clearBank();
       setRoundEndReason(null);
+      setRoundPoints(0);
+      setIsStealMode(false);
 
       console.log("Moving to next round...");
       alerts.newRound(
@@ -456,8 +473,7 @@ return (
           {[1, 2, 3].map((num) => (
             <div
               key={num}
-              className={`strike ${strikeCount >= num ? "active" : ""}`}
-            >
+className={`strike ${activeTeam === 'team1' && strikeCount >= num ? "active" : ""}`}            >
               X
             </div>
           ))}
@@ -471,8 +487,7 @@ return (
           {[1, 2, 3].map((num) => (
             <div
               key={num}
-              className={`strike ${strikeCount >= num ? "active" : ""}`}
-            >
+className={`strike ${activeTeam === 'team2' && strikeCount >= num ? "active" : ""}`}            >
               X
             </div>
           ))}

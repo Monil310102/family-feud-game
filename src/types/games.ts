@@ -23,10 +23,10 @@ export interface GameState {
 
 }
 
-export type GameAlert =
-  | null
-  | {
-      title: string;
-      subtitle?: string;
-      variant?: "info" | "success" | "warning";
-    };
+export type AlertVariant = "info" | "success" | "warning";
+
+export interface GameAlert {
+  title: string;
+  subtitle?: string;
+  variant?: AlertVariant;
+}

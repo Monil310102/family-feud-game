@@ -14,25 +14,32 @@ function App() {
   const [team2Score, setTeam2Score] = useState(0);
   const [activeTeam, setActiveTeam] = useState<'team1' | 'team2'>('team1');
   const [currentBank, setCurrentBank] = useState<number>(0);
-  const [gameAlert, setGameAlert] = useState<GameAlert>(null);
+  const [gameAlert, setGameAlert] = useState<GameAlert | null>(null);
+  const [postRoundAction, setPostRoundAction] = useState<"reveal" | "nextRound" | null>(null);
+  type RoundEndReason = "cleanSweep" | "stealSuccess" | "stealFail" | null;
 
+  const [roundEndReason, setRoundEndReason] =useState<RoundEndReason>(null);
+  const [roundPoints, setRoundPoints] = useState<number>(0);
 
-    const showAlert = (
-    title: string,
-    subtitle?: string,
-    variant: "info" | "success" | "warning" = "info"
-  ) => {
-    setGameAlert({ title, subtitle, variant });
+const showAlert = (
+  title: string,
+  subtitle?: string,
+  variant: "info" | "success" | "warning" = "info",
+  postAction: "reveal" | "nextRound" | null = null
+) => {
+  setGameAlert({ title, subtitle, variant });
+  setPostRoundAction(postAction);
 
-    // auto-dismiss after 2.5s
-    setTimeout(() => {
-      setGameAlert(null);
-    }, 2500);
-  };
+  if (!postAction) {
+    // auto-dismiss only if no post-round action is needed
+    setTimeout(() => setGameAlert(null), 2500);
+  }
+};
+
 
 const alerts = {
   cleanSweep: () =>
-    showAlert("CLEAN SWEEP!", "All answers revealed", "success"),
+    showAlert("CLEAN SWEEP!", "All answers revealed", "success", "nextRound"),
 
   stealOpportunity: (team: "TEAM 1" | "TEAM 2") =>
     showAlert("STEAL!", `${team} can steal`, "warning"),
@@ -41,21 +48,24 @@ const alerts = {
     showAlert(
       "SUCCESSFUL STEAL!",
       `${team} steals ${points} points`,
-      "success"
+      "success",
+      "reveal"  // host clicks to reveal remaining answers
     ),
 
   stealFail: (team: "TEAM 1" | "TEAM 2", points: number) =>
     showAlert(
       "STEAL FAILED",
       `${team} banks ${points} points`,
-      "warning"
+      "warning",
+      "reveal" // host clicks to reveal remaining answers
     ),
 
   roundWin: (team: "TEAM 1" | "TEAM 2", points: number) =>
     showAlert(
       `${team} WINS THE ROUND`,
       `They take ${points} points`,
-      "success"
+      "success",
+      "nextRound"
     ),
 
   newRound: (round: number, question: string) =>
@@ -64,9 +74,6 @@ const alerts = {
       question,
       "info"
     ),
-
-    
-  
 };
 
   useEffect(() => {
@@ -123,6 +130,13 @@ const alerts = {
   if (key.toLowerCase() === "n") {
     nextRound();
   }
+ 
+  // Logic: Handle "L" for END ROUND (host controlled)
+  if (key.toLowerCase() === "l") {
+    console.log("Host ended the round.");
+    endRound();
+    console.log("Host ended the round2.");
+  }
   };
 
   // Attach the listener
@@ -152,6 +166,7 @@ useEffect(() => {
   if (strikeCount === 4) {
     const timer = setTimeout(() => {
       alert("Steal failed! Awarding bank to original team.");
+      setRoundPoints(currentBank);
       alerts.stealFail(
         activeTeam === 'team1' ? 'TEAM 2' : 'TEAM 1',
         currentBank
@@ -159,12 +174,9 @@ useEffect(() => {
       const originalTeam = activeTeam === 'team1' ? 'team2' : 'team1';
       
       BankPoints(originalTeam); 
-      alert(`Steal Failed! Points awarded to ${originalTeam === 'team1' ? 'Team 1' : 'Team 2'}`);
+      setRoundEndReason("stealFail");
 
-      alerts.roundWin(
-        originalTeam === 'team1' ? 'TEAM 1' : 'TEAM 2',
-        currentBank
-    );
+      alert(`Steal Failed! Points awarded to ${originalTeam === 'team1' ? 'Team 1' : 'Team 2'}`);
     }, 500);
 
     return () => clearTimeout(timer);
@@ -173,23 +185,21 @@ useEffect(() => {
 
 // EFFECT B: The Clean Sweep Referee
 useEffect(() => {
+  if (roundEndReason !== null) return;
   const allRevealed = answers.length > 0 && answers.every(a => a.isRevealed);
 
   // Award points if board is cleared AND it's not a steal (strikes < 3)
   if (allRevealed && currentBank > 0 && strikeCount < 3) {
     const timer = setTimeout(() => {
+      setRoundPoints(currentBank);
       BankPoints(); // Awards to activeTeam
       //alert(`Clean Sweep! Points for2 ${activeTeam === 'team1' ? 'Team 1' : 'Team 2'}!`);
       alerts.cleanSweep();
-
-            alerts.roundWin(
-        activeTeam === 'team1' ? 'TEAM 1' : 'TEAM 2',
-        currentBank
-      );
+      setRoundEndReason("cleanSweep");
     }, 600);
     return () => clearTimeout(timer);
   }
-}, [answers, currentBank, activeTeam, strikeCount]);
+}, [answers, currentBank, activeTeam, strikeCount,roundEndReason]);
 
 // EFFECT C: The Round Loader
 useEffect(() => {
@@ -198,6 +208,31 @@ useEffect(() => {
     setAnswers(nextRoundData.answers.slice(0, 8));
   }
 }, [currentRoundIndex]);
+
+useEffect(() => {
+  if (!roundEndReason) return;
+
+  // Wait so reveal animations can finish
+  const timer = setTimeout(() => {
+    const winningTeam =
+      roundEndReason === "stealFail"
+        ? activeTeam === "team1"
+          ? "TEAM 2"
+          : "TEAM 1"
+        : activeTeam === "team1"
+        ? "TEAM 1"
+        : "TEAM 2";
+
+    const pointsWon =
+      roundEndReason === "cleanSweep" ||
+      roundEndReason === "stealSuccess"
+        ? currentBank
+        : currentBank;
+
+  }, 800);
+
+  return () => clearTimeout(timer);
+}, [roundEndReason]);
 
 
 const revealAnswer = (index: number) => {
@@ -226,18 +261,28 @@ const revealAnswer = (index: number) => {
       BankPoints(activeTeam, newBankTotal); 
       
       alert(`Successful Steal! Team ${activeTeam === 'team1' ? '1' : '2'} takes all ${newBankTotal} points!`);
+      setRoundPoints(newBankTotal);
+
       alerts.stealSuccess(
         activeTeam === 'team1' ? 'TEAM 1' : 'TEAM 2',
         newBankTotal
       );
-
-
-      alerts.roundWin(
-      activeTeam === 'team1' ? 'TEAM 1' : 'TEAM 2',
-      currentBank
-    );
+      setRoundEndReason("stealSuccess");
     }, 500);
   }
+};
+
+const allAnswersRevealed =
+  answers.length > 0 && answers.every(a => a.isRevealed);
+
+const endRound = () => {
+  // Host pressed L too early → ignore
+  if (!allAnswersRevealed) return;
+
+  const winningTeam =
+    activeTeam === "team1" ? "TEAM 1" : "TEAM 2";
+
+  alerts.roundWin(winningTeam, roundPoints);
 };
 
 const revealAllAnswers = () => {
@@ -293,6 +338,8 @@ const revealAllAnswers = () => {
       
       resetStrikes();
       clearBank();
+      setRoundEndReason(null);
+
       console.log("Moving to next round...");
       alerts.newRound(
         currentRoundIndex + 2,
@@ -331,16 +378,35 @@ const BankPoints = (targetTeam = activeTeam, points = currentBank) => {
 return (
   <div className="game-container">
 
-    {gameAlert && (
-      <div className="alert-overlay">
-        <div className={`alert-box ${gameAlert.variant || "info"}`}>
-          <h2>{gameAlert.title}</h2>
-          {gameAlert.subtitle && <p>{gameAlert.subtitle}</p>}
+{gameAlert && (
+  <div className="alert-overlay">
+    <div className={`alert-box ${gameAlert.variant || "info"}`}>
+      <h2>{gameAlert.title}</h2>
+      {gameAlert.subtitle && <p>{gameAlert.subtitle}</p>}
 
-          <button onClick={() => setGameAlert(null)}>CONTINUE</button>
-        </div>
-      </div>
-    )}
+      {postRoundAction === "reveal" && (
+        <button onClick={() => {
+          revealAllAnswers();
+          setGameAlert(null);
+          setPostRoundAction("nextRound"); // next action will be round win
+        }}>Reveal Remaining Answers</button>
+      )}
+
+      {postRoundAction === "nextRound" && (
+        <button onClick={() => {
+          setGameAlert(null);
+          setPostRoundAction(null);
+          nextRound();
+        }}>Next Round</button>
+      )}
+
+      {!postRoundAction && (
+        <button onClick={() => setGameAlert(null)}>CONTINUE</button>
+      )}
+    </div>
+  </div>
+)}
+
 
 
 

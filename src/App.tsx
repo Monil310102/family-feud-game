@@ -74,6 +74,14 @@ const alerts = {
       question,
       "info"
     ),
+
+        gameOver: (team1Score:number , team2Score:number) =>
+          showAlert(
+  "GAME OVER",
+  `Final Score — Team 1: ${team1Score} | Team 2: ${team2Score}`,
+  "info"
+  ),
+
 };
 
   useEffect(() => {
@@ -153,7 +161,6 @@ useEffect(() => {
   if (strikeCount === 3 && !isStealMode) {
     // We wait 500ms so the 3rd strike animation/sound can play first
     const timer = setTimeout(() => {
-      alert("3 Strikes! Switching to the stealing team.");
       alerts.stealOpportunity(activeTeam === 'team1' ? 'TEAM 2' : 'TEAM 1');
       switchActiveTeam(); 
       setIsStealMode(true);
@@ -167,7 +174,6 @@ useEffect(() => {
   // 2. THE STEAL FAIL: Happens if the stealing team misses (Strike 4)
   if (strikeCount === 1 && isStealMode) {
     const timer = setTimeout(() => {
-      alert("Steal failed! Awarding bank to original team.");
       setRoundPoints(currentBank);
       alerts.stealFail(
         activeTeam === 'team1' ? 'TEAM 2' : 'TEAM 1',
@@ -178,8 +184,6 @@ useEffect(() => {
       BankPoints(originalTeam); 
       setRoundEndReason("stealFail");
       resetStrikes();
-
-      alert(`Steal Failed! Points awarded to ${originalTeam === 'team1' ? 'Team 1' : 'Team 2'}`);
     }, 500);
 
     return () => clearTimeout(timer);
@@ -196,7 +200,6 @@ useEffect(() => {
     const timer = setTimeout(() => {
       setRoundPoints(currentBank);
       BankPoints(); // Awards to activeTeam
-      //alert(`Clean Sweep! Points for2 ${activeTeam === 'team1' ? 'Team 1' : 'Team 2'}!`);
       alerts.cleanSweep();
       setRoundEndReason("cleanSweep");
     }, 600);
@@ -238,7 +241,6 @@ const revealAnswer = (index: number) => {
       // PASS THE MANUAL TOTAL HERE
       BankPoints(activeTeam, newBankTotal); 
       
-      alert(`Successful Steal! Team ${activeTeam === 'team1' ? '1' : '2'} takes all ${newBankTotal} points!`);
       setRoundPoints(newBankTotal);
 
       alerts.stealSuccess(
@@ -314,12 +316,7 @@ const addStrike = () => {
         mockRounds[currentRoundIndex + 1]?.questionText || ""
       );
     } else {
-      alert("Game Over! All 5 rounds complete.");
-      showAlert(
-  "GAME OVER",
-  `Final Score — Team 1: ${team1Score} | Team 2: ${team2Score}`,
-  "info"
-);
+      alerts.gameOver(team1Score, team2Score);
     }
   }
   const clearBank = () => {
